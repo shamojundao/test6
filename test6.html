@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]><html class="ie6" lang="zh-cn"><![endif]-->
+<!--[if IE 7 ]><html class="ie7" lang="zh-cn"><![endif]-->
+<!--[if IE 8 ]><html class="ie8" lang="zh-cn"><![endif]-->
+<!--[if IE 9 ]><html class="ie9" lang="zh-cn"><![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--><html class="" lang="zh-cn"><!--<![endif]-->
+<head>
+	 
+
+<script src="script/jquery-1.8.3.min.js"></script>
+
+
+  <style type="text/css">
+  	marquee{ width:202px;height:52px;white-space:nowrap}
+  @media screen and (-webkit-min-device-pixel-ratio:0) {
+	  	marquee{width:202px;}
+	  }
+  </style>
+</head>
+<body>
+<form method="post" id="myForm">
+	<ul>
+    	<li><input type="text" name="tel1" id="txtTel1" maxlength="3" size="3"  value="1"/></li>
+        <li><input type="text" name="tel2" id="txtTel2" maxlength="3"  size="6"/></li>
+        <li><input type="text" name="tel3" id="txtTel3" maxlength="4" size="9" /></li>
+    </ul>
+    <select name="location" id="selLocation" >
+	<option value="sunnyvalue,CA">sunnyvalue</option>
+    <option value="Los Angeles,CA">Los Angeles</option>
+    <option value="Mountain View,CA">Mountain View</option>
+    <option value="">China</option>
+    <option>Australia</option>
+</select>
+</form>
+<marquee style="border:solid 1px green;">
+	<div style="width:200px;border:solid 1px red;height:50px; display:inline-block;">nihao</div>
+    <div style="width:200px;border:solid 1px red;height:50px;display:inline-block;">tahao</div>
+</marquee>
+<div id="cs">teston</div>
+<p onClick="f1();">1111111111111</p>
+<p onClick="f2();">2222222</p>
+<script>
+	
+	/*function test(){
+	var EventUtil={
+	addHandler:function(element,type,handler){
+		if(element.addEventListener){
+			element.addEventListener(type,handler,false);	
+		}else if(element.attachEvent){
+			element.attachEvent("on"+type,handler);	
+		}else{
+			element["on"+type]=handler;	
+		}	
+	},
+	getEvent:function(event){
+		return event?event:window.event;	
+	},
+	getTarget:function(event){
+		return event?event:window.event;	
+	},
+	preventDefault:function(event){
+		if(event.preventDefault){
+			event.preventDefault();	
+		}else{
+			event.returnValue=false;		
+		}	
+	},
+	getCharCode:function(event){
+		if(typeof event.charCode=="number"){
+			return event.charCode;	
+		}else{
+			return event.keyCode;	
+		}
+	},
+	getClipboardText:function(event){
+		var clipboardData=(event.clipboardData||window.clipboardData);
+		return clipboardData.getData("text");	
+	},
+	setClipboardText:function(event){
+		if(event.clipboardData){
+			return event.clipboardData.setData("text/plain",value);	
+		}else if(window.clipboardData){
+			return window.clipboardData.setData("text",value);	
+		}	
+	}
+}
+	var textbox=document.forms[0].elements[0];
+	EventUtil.addHandler(textbox,"keypress",function(event){
+		event=EventUtil.getEvent(event);
+		var target=EventUtil.getTarget(event);
+		var charCode=EventUtil.getCharCode(event);
+		if(!/\d/.test(String.fromCharCode(charCode))&&charCode>9&&!event.ctrlKey){
+			EventUtil.preventDefault(event);
+		}
+	})
+	EventUtil.addHandler(textbox,"paste",function(event){
+		event=EventUtil.getEvent(event);
+		var text=EventUtil.getClipboardText(event);
+		if(!/^\d*$/.test(text)){
+			EventUtil.preventDefault(event);	
+		}	
+	})
+	
+
+}
+function f1(){
+var test=document.getElementById("cs");
+test.onclick=function(){
+	alert(5);	
+}	
+}
+function f2(){
+var test=document.getElementById("cs");
+test.onclick=function(){
+	alert(6);	
+}	
+}*/
+/*window.onload=function(){
+	test();
+	var selectbox=document.forms[0].elements["location"];
+	var selectedOption=selectbox.options[selectbox.selectedIndex];
+	var selectedIndex=selectbox.selectedIndex;
+	var selectedOption=selectbox.options[selectedIndex];
+	//alert("Selected index:"+selectedIndex+"\nSelected text:"+selectedOption.text+"\nSelected value:"+selectedOption.value);
+	
+	var newOption=new Option("Option text","Option value");
+	selectbox.add(newOption,undefined);
+	var n='a1'; n++; alert(n);
+	var x='1';x++;alert("x:"+x);
+	var s='s';s++;alert("s:"+s); 
+	
+	
+}*/
+/*(function(){
+	function tabForward(event){
+	
+	event=EventUtil.getEvent(event);
+	var target=EventUtil.getTarget(event);
+	if(target.value.length==target.maxlength){
+		var form=target.form;
+		for(var i=0,length=form.elements.length;i<length;i++){
+			if(form.elements[i]==target){
+				if(form.elements[i+1]){
+					form.elements[i+1].focus();	
+				}
+				return;	
+			}	
+		}	
+	}	
+}	
+var textbox1=document.getElementById("txtTel1");
+var textbox2=document.getElementById("txtTel2");
+var textbox3=document.getElementById("txtTel3");
+EventUtil.addHandler(textbox1,"keyup",tabForward);
+EventUtil.addHandler(textbox2,"keyup",tabForward);
+EventUtil.addHandler(textbox3,"keyup",tabForward);
+		
+})();*/	
+
+
+
+/*[
+{
+	"title":"professional javaScript",
+	"auchors":[
+		"Nicholas C. Zakas"
+	],
+	edition:3,
+	year:2011
+	},
+	{
+		"title":"Professional JavaScript",
+		"auchors":[
+			"Nicholas C. Zakas",
+			"Jeremy McPeak",
+			"Joe Fawcett"
+		],
+		edition:2,
+		year:2009
+	},
+	]
+	//alert(books[1].title);
+	var book={
+			title:"professional JavaScript",
+			auchors:[
+				"Nicholas C. Zakas"
+			],
+			edition:3,
+			year:2011,
+			
+			
+			title:"Professional JavaScript1",
+			auchors:[
+				"Jeremy McPeak",
+				"Nicholas C. Zakas",
+				"Joe Fawcett"
+			],
+			edition:4,
+			year:2014,
+			releaseDate:new Date(2014,10,13)
+		};*/
+	/*var jsonText=JSON.stringify(book,function(key,value){
+			switch(key){
+				case "auchors":
+					return value.join(",")
+				case "year":
+					return 5000;
+				case "edition":
+					return undefined;
+				default:
+					return value;	
+			}
+		});*/
+	//var jsonText=JSON.stringify(book,null,"--");	
+	//alert(jsonText);
+	/*var bookCopy=JSON.parse(jsonText,function(key,value){
+		if(key=="releaseDate"){
+			return new Date(value);	
+		}else{
+			return value;	
+		}	
+	});
+	alert(bookCopy.releaseDate.getFullYear());*/
+	function createXHR(){
+		alert(4444444444444444);
+		if(typeof XMLHttpRequest !="undefined"){
+			alert(5555);
+			return new XMLHttpRequest();	
+		}
+		else if(typeof ActiveXObject !="underfined"){
+			alert(334);
+			if(typeof arguments.callee.activeXString !="string"){
+				alert(1111112222);
+				var versions=["MSXML2.XMLHttp.6.0","MSXML2.XMLHttp.3.0","MSXML2.SMLHttp"],i,len;
+				for(i=0,len=versions.length;i<len;i++){
+					try{
+						new ActiveXObject(versions[i]);
+						arguments.callee.activeXString=versions[i];	
+					}catch(ex){
+							
+					}	
+				}	
+			}
+			else{
+				alert(111111);
+				throw new Error("No XHR object available.");	
+			}	
+		}
+		else{
+			alert(5);	
+		}	
+	}
+window.onload=function(){	
+createXHR();
+
+}
+</script>
+</body>
+</html>
+
+ 
