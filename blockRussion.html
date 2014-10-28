@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]><html class="ie6" lang="zh-cn"><![endif]-->
+<!--[if IE 7 ]><html class="ie7" lang="zh-cn"><![endif]-->
+<!--[if IE 8 ]><html class="ie8" lang="zh-cn"><![endif]-->
+<!--[if IE 9 ]><html class="ie9" lang="zh-cn"><![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--><html class="" lang="zh-cn"><!--<![endif]-->
+<head>
+<title>俄罗斯方块</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">	 
+
+<script src="script/jquery-1.8.3.min.js"></script>
+
+
+<style type="text/css">
+	*{ margin:0;padding:0;overflow:hidden;}
+	@font-face{ font-family:tmb;src:url("DS_DIGIB.TTF") format(" TrueType");}
+	body>div{ font-size:13pt; padding-bottom:8px;}
+	span{ font-family:tmb;font-size:20pt;color:green;}
+	
+</style>
+</head>
+<body>
+<div style="width:326px;border:solid 1px black;background:#ff9;">
+	<div style="float:left">速度:<span id="curSpeedEle"></span>当前积分:<span id="curScoreEle"></span></div>
+    <div style="float:right;">最高积分:<span id="maxScoreEle"></span></div>        
+</div>
+
+<script>
+var createCanvas=function(rows,cols,cellWidth,cellHeight){
+	
+	//7种组合
+var blockArr=[
+	[{x:cols/2-1,y:0,color:1},{x:cols/2,y:0,color:1},{x:cols/2,y:1,color:1},{x:cols/2+1,y:1,color:1}],//z
+	[{x:cols/2+1,y:0,color:2},{x:cols/2,y:0,color:2},{x:cols/2,y:1,color:2},{x:cols/2-1,y:1,color:2}],//反z
+	[{x:cols/2-1,y:0,color:3},{x:cols/2,y:0,color:3},{x:cols/2-1,y:1,color:3},{x:cols/2,y:1,color:3}],//"田"
+	[{x:cols/2-1,y:0,color:4},{x:cols/2-1,y:1,color:4},{x:cols/2-1,y:2,color:4},{x:cols/2,y:2,color:4}],//"L"
+	[{x:cols/2,y:0,color:5},{x:cols/2,y:1,color:5},{x:cols/2,y:2,color:5},{x:cols/2-1,y:2,color:5}],//"j"
+	[{x:cols/2,y:0,color:6},{x:cols/2,y:1,color:6},{x:cols/2,y:2,color:6},{x:cols/2,y:3,color:6}],//“1”行
+	[{x:cols/2-1,y:1,color:7},{x:cols/2,y:0,color:7},{x:cols/2,y:1,color:7},{x:cols/2+1,y:1,color:7}]//“山”行
+]
+
+var tetris_status=[];
+for(var i=0;i<rows;i++){
+	tetris_status[i]=[];
+	for(var j=0;j<cols;j++){
+		tetris_status[i][j]="NO_BLOCK";	
+	}	
+}
+
+var initBlock=function(){
+	var rand=Math.floor(Math.random()*blockArr.length);
+	var currentFall=[{x:blockArr[rand][0].x,y:blockArr[rand][0].y,color:blockArr[rand][0].color},{x:blockArr[rand][1].x,y:						blockArr[rand][1].y,color:blockArr[rand][1].color},{x:blockArr[rand][2].x,y:blockArr[rand][2].y,color:blockArr[rand][2].color},{x:blockArr[rand][3].x,y:blockArr[rand][3].y,color:blockArr[rand][3].color}];
+var tetris_status=[];	
+}
+
+var lineFull=function(){
+	for(var i=0;i<rows;i++){
+		var flag=true;
+		for(var j=0;j<cols;j++){
+			if(tetris_status[i][j]=="NO_BLOCK"){
+				flag=false;
+				break;	
+			}	
+		}
+		if(flag){
+			curScoreEle.innerHTML=curScore+=100;
+			localStorage.setItem("curScore",curScore);
+			if(curScore>=curSpeed*curSpeed*500){
+				curSpeedEle.innerHTML=curSpeed+=1;
+				localStorage.setItem("curSpeed",curSpeed);
+				clearInterval(curTimer);
+				curTimer=setInterval("moveDown();",500/curSpeed);
+			}
+			for(var k=i;k>0;k--){
+				for(var l=0;l<cols;l++){
+					tetris_status[k][l]=tetris_status[k-1][l];	
+				}	
+			}
+			drawBlock();	
+		}	
+	}	
+}
+
+var drawBlock=function(){
+	for(var i=0;i<rows;i++){
+		for(var j=0;j<cols;j++){
+			if(tetris_status[i][j]!="NO_BLOCK"){
+				tetris_ctx.fillStyle=colors[tetris_status[i][j]];
+				tetris_ctx.fillRect(j*cellWidth+1,i*cellHeight+1,cellWdith-2,cellHeight-2);	
+			}
+			else{
+				tetris_ctx.fillStyle="white";
+				tetris_ctx.fillRect(j*cellWidth+1,i*cellHeight+1,cellWdith-2,cellHeight-2);	
+			}	
+		}	
+	}	
+}
+
+var moveLeft=function(){
+	var canLeft=true;
+	for(var i=0;i<currentFall.length;i++){
+		if(currentFall[i].x<=0){
+			canLeft=false;
+			break;	
+		}
+		if(tetris_status[currentFall[i].y][currentFall[i].x-1]!=NO_BLOCK){
+			canLeft=false;
+			break;	
+		}	
+	}
+	if(canLeft){
+		for(var i=0;i<currentFall[i].length;i++){
+			var cur=currentFall[i];
+				
+		}	
+	}	
+}
+
+	tetris_canvas=document.createElement("canvas");
+	tetris_canvas.width=cols*cellWidth;
+	tetris_canvas.height=rows*cellHeight;
+	tetris_canvas.style.border="1px solid black";
+	
+	tetris_ctx=tetris_canvas.getContext("2d");
+	tetris_ctx.beginPath();
+	
+	for(var i=1;i<rows;i++){
+		tetris_ctx.moveTo(0,i*cellHeight);
+		tetris_ctx.lineTo(cols*cellWidth,i*cellHeight);	
+	}
+	for(var i=1;i<cols;i++){
+		tetris_ctx.moveTo(i*cellWidth,0);
+		tetris_ctx.lineTo(i*cellWidth,rows*cellHeight);	
+	}
+	tetris_ctx.closePath();
+	tetris_ctx.strokeStyle="#333";
+	tetris_ctx.lineWidth="0.3";
+	tetris_ctx.stroke();
+	
+}
+
+var moveRight=function(){
+	var canRight=true;
+	for(var i=0;i<currentFall[i].length;i++){
+		if(currentFall[i].x>=cols-1){
+			canRight=false;
+			break;
+		}	
+	}	
+}
+
+
+
+var initBlock=function(){
+	var rand=Math.floor(Math.random()*blockArr.length);
+	var currentFall=[{x:blockArr[rand][0].x,y:blockArr[rand][0].y,color:blockArr[rand][0].color},{x:blockArr[rand][1].x,y:						blockArr[rand][1].y,color:blockArr[rand][1].color},{x:blockArr[rand][2].x,y:blockArr[rand][2].y,color:blockArr[rand][2].color},{x:blockArr[rand][3].x,y:blockArr[rand][3].y,color:blockArr[rand][3].color}];
+var tetris_status=[];	
+}
+
+//控制方块下落
+var moveDown=function(){
+	var canDown=true;
+	for(var i=0;i<currentFall.length;i++){//判断是否可以往下落
+		if(currentFall[i].y>=(rows-1)){
+			canDown=false;
+			break;	
+		}
+		if(tetris_status[current[i].y+1][currentFall[i].x]!="NO_BLOCK"){
+			canDown=false;
+			break;	
+		}		
+	}	
+	if(canDown){//可以往下落
+		for(var i=0;i<currentFall.length;i++){
+			var cur=currentFall[i];
+			tetris_ctx.fillStyle="white";
+			tetris_ctx.fillRect(cur.x*cellHeight+1,cur.y*cellWidth+1,cellWidth-2,cellHeight-2);	
+			for(var i=0;i<currentFall.length;i++){
+				var cur=currentFall[i];
+				cur.y++;	
+			}
+			for(var i=0;i<currentFall.length;i++){
+				var cur=currentFall[i];
+				tetris_ctx.fillStyle=colors[cur.color];
+				tetris_ctx.fillRect(cur.x*cellHeight+1,cur.y*cellWidth+1,cellWidth-2,cellHeight-2);	
+			}
+		}
+	}
+	else{
+		for(var i=0;i<currentFall.length;i++){
+			var cur=currentFall[i];
+			if(cur.y<2){
+				localStorage.removeItem("curScore");
+				localStorage.removeItem("tetris_status");
+				localStorage.removeItem("curSpeen");
+				if(confirm("您已经输了，是否参加排名")){
+					maxScore=localStorage.getItem("maxScore");
+					maxScore=maxScore==null?0:maxScore;
+					if(curScore>=maxScore){
+						localStorage.setItem("maxScore",curScore);	
+					}	
+				}
+				isPlaying=false;
+			clearInterval(curTimer);
+			return;	
+			}
+			tetris_status[cur.y][cur.x]=cur.color;
+		}	
+		lineFull();
+		localStorage.setItem("tetris_status",JSON.stringify(tetris_status));
+		initBlock();
+	}		
+}
+
+window.onload=function(){
+	createCanvas(18,13,25,25);
+	document.body.appendChild(tetris_canvas);	
+}
+</script>
+</body>
+</html>
+
+ 
