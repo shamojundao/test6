@@ -26,31 +26,49 @@
 </div>
 
 <script>
-var createCanvas=function(rows,cols,cellWidth,cellHeight){
-	
-	//7种组合
+	var curScore;
+	var curSpeed;
+	var rows=18;//设置有画布有多少行
+	var cols=14;//设置有画布有多少列
+	var cellWidth=25;
+	var cellHeight=25;
+	var tetris_status=[];
+	var currentFall=[];
+//7种组合
 var blockArr=[
-	[{x:cols/2-1,y:0,color:1},{x:cols/2,y:0,color:1},{x:cols/2,y:1,color:1},{x:cols/2+1,y:1,color:1}],//z
-	[{x:cols/2+1,y:0,color:2},{x:cols/2,y:0,color:2},{x:cols/2,y:1,color:2},{x:cols/2-1,y:1,color:2}],//反z
-	[{x:cols/2-1,y:0,color:3},{x:cols/2,y:0,color:3},{x:cols/2-1,y:1,color:3},{x:cols/2,y:1,color:3}],//"田"
-	[{x:cols/2-1,y:0,color:4},{x:cols/2-1,y:1,color:4},{x:cols/2-1,y:2,color:4},{x:cols/2,y:2,color:4}],//"L"
-	[{x:cols/2,y:0,color:5},{x:cols/2,y:1,color:5},{x:cols/2,y:2,color:5},{x:cols/2-1,y:2,color:5}],//"j"
-	[{x:cols/2,y:0,color:6},{x:cols/2,y:1,color:6},{x:cols/2,y:2,color:6},{x:cols/2,y:3,color:6}],//“1”行
-	[{x:cols/2-1,y:1,color:7},{x:cols/2,y:0,color:7},{x:cols/2,y:1,color:7},{x:cols/2+1,y:1,color:7}]//“山”行
-]
-
-var tetris_status=[];
-for(var i=0;i<rows;i++){
-	tetris_status[i]=[];
-	for(var j=0;j<cols;j++){
-		tetris_status[i][j]="NO_BLOCK";	
-	}	
-}
-
+	[{x:cols/2-1,y:0,color:"red"},{x:cols/2,y:0,color:"red"},{x:cols/2,y:1,color:"red"},{x:cols/2+1,y:1,color:"red"}],//z
+	[{x:cols/2+1,y:0,color:"green"},{x:cols/2,y:0,color:"green"},{x:cols/2,y:1,color:"green"},{x:cols/2-1,y:1,color:"green"}],//反z
+	[{x:cols/2-1,y:0,color:"blue"},{x:cols/2,y:0,color:"blue"},{x:cols/2-1,y:1,color:"blue"},{x:cols/2,y:1,color:"blue"}],//"田"
+	[{x:cols/2-1,y:0,color:"yellow"},{x:cols/2-1,y:1,color:"yellow"},{x:cols/2-1,y:2,color:"yellow"},{x:cols/2,y:2,color:"yellow"}],//"L"
+	[{x:cols/2,y:0,color:"black"},{x:cols/2,y:1,color:"black"},{x:cols/2,y:2,color:"black"},{x:cols/2-1,y:2,color:"black"}],//"j"
+	[{x:cols/2,y:0,color:"purple"},{x:cols/2,y:1,color:"purple"},{x:cols/2,y:2,color:"purple"},{x:cols/2,y:3,color:"purple"}],//“1”行
+	[{x:cols/2-1,y:1,color:"pink"},{x:cols/2,y:0,color:"pink"},{x:cols/2,y:1,color:"pink"},{x:cols/2+1,y:1,color:"pink"}]//“山”行
+];
 var initBlock=function(){
 	var rand=Math.floor(Math.random()*blockArr.length);
-	var currentFall=[{x:blockArr[rand][0].x,y:blockArr[rand][0].y,color:blockArr[rand][0].color},{x:blockArr[rand][1].x,y:						blockArr[rand][1].y,color:blockArr[rand][1].color},{x:blockArr[rand][2].x,y:blockArr[rand][2].y,color:blockArr[rand][2].color},{x:blockArr[rand][3].x,y:blockArr[rand][3].y,color:blockArr[rand][3].color}];
-var tetris_status=[];	
+	currentFall=[{x:blockArr[rand][0].x,y:blockArr[rand][0].y,color:blockArr[rand][0].color},{x:blockArr[rand][1].x,y:						blockArr[rand][1].y,color:blockArr[rand][1].color},{x:blockArr[rand][2].x,y:blockArr[rand][2].y,color:blockArr[rand][2].color},{x:blockArr[rand][3].x,y:blockArr[rand][3].y,color:blockArr[rand][3].color}];
+	console.log("rand:"+rand);
+	for(var i=0;i<currentFall.length;i++){
+		console.log("i:"+currentFall[i].color+":"+currentFall[i].x+":"+currentFall[i].y);
+		tetris_ctx.fillStyle=currentFall[i].color;
+		tetris_ctx.fillRect(currentFall[i].x*cellWidth+1,currentFall[i].y*cellHeight+1,cellWidth-2,cellHeight-2);	
+	}
+	
+}
+
+var drawBlock=function(){
+	for(var i=0;i<rows;i++){
+		for(var j=0;j<cols;j++){
+			if(tetris_status[i][j]!="NO_BLOCK"){
+				tetris_ctx.fillStyle=colors[tetris_status[i][j]];
+				tetris_ctx.fillRect(j*cellWidth+1,i*cellHeight+1,cellWdith-2,cellHeight-2);	
+			}
+			else{
+				tetris_ctx.fillStyle="white";
+				tetris_ctx.fillRect(j*cellWidth+1,i*cellHeight+1,cellWidth-2,cellHeight-2);	
+			}	
+		}	
+	}	
 }
 
 var lineFull=function(){
@@ -81,40 +99,7 @@ var lineFull=function(){
 	}	
 }
 
-var drawBlock=function(){
-	for(var i=0;i<rows;i++){
-		for(var j=0;j<cols;j++){
-			if(tetris_status[i][j]!="NO_BLOCK"){
-				tetris_ctx.fillStyle=colors[tetris_status[i][j]];
-				tetris_ctx.fillRect(j*cellWidth+1,i*cellHeight+1,cellWdith-2,cellHeight-2);	
-			}
-			else{
-				tetris_ctx.fillStyle="white";
-				tetris_ctx.fillRect(j*cellWidth+1,i*cellHeight+1,cellWdith-2,cellHeight-2);	
-			}	
-		}	
-	}	
-}
-
-var moveLeft=function(){
-	var canLeft=true;
-	for(var i=0;i<currentFall.length;i++){
-		if(currentFall[i].x<=0){
-			canLeft=false;
-			break;	
-		}
-		if(tetris_status[currentFall[i].y][currentFall[i].x-1]!=NO_BLOCK){
-			canLeft=false;
-			break;	
-		}	
-	}
-	if(canLeft){
-		for(var i=0;i<currentFall[i].length;i++){
-			var cur=currentFall[i];
-				
-		}	
-	}	
-}
+var createCanvas=function(rows,cols,cellWidth,cellHeight){
 
 	tetris_canvas=document.createElement("canvas");
 	tetris_canvas.width=cols*cellWidth;
@@ -139,33 +124,122 @@ var moveLeft=function(){
 	
 }
 
+
+var moveLeft=function(currentFall){
+	var canLeft=true;
+	for(var i=0;i<currentFall.length;i++){
+		if(currentFall[i].x<=0){
+			canLeft=false;
+			break;	
+		}
+		if(tetris_status[currentFall[i].y][currentFall[i].x-1]!=NO_BLOCK){
+			canLeft=false;
+			break;	
+		}	
+	}
+	if(canLeft){
+		for(var i=0;i<currentFall[i].length;i++){
+			var cur=currentFall[i];
+				
+		}	
+	}	
+}
+
+
 var moveRight=function(){
 	var canRight=true;
 	for(var i=0;i<currentFall[i].length;i++){
 		if(currentFall[i].x>=cols-1){
 			canRight=false;
 			break;
+		}
+		//如果右边的位置已经有方块，就不能移动
+		if(tetris_status[currentFall[i].y][currentFall[i].x+1]!="NO_BLOCK"){
+			canRight=false;
+			break;	
 		}	
+	}
+	if(canRight){
+		for(var i=0;i<currentFall.length;i++){//右移前将每个方块都涂成白色
+			var cur=currentFall[i];
+			tetris_ctx.fillStyle="white";
+			tetris_ctx.fillRect(cur[i].x*cellWidth+1,cur[i].y*cellHeight+1,cellWidth-2,cellHeight-2);	
+		}
+		for(var i=0;i<currentFall[i].length;i++){//右移
+			var cur=currentFall[i];
+			cur.x++;
+		}
+		//右移所有正在掉落的方块涂色
+		for(var i=0;i<currentFall[i].length;i++){
+			var cur=currentFall[i];
+			tetris_ctx.fillStyle=colors[cur.color];
+			tetris_ctx.fillRect(cur.x*cellWidth+1,cur.y*cellHeight+1,cellWidth-2,cellHeight-2);	
+		}
+	}	
+}
+var rotate=function(){//旋转方块
+	var canRotate=true;
+	for(var i=0;i<currentFall.length;i++){
+		var preX=currentFall[i].x;
+		var preY=currentFall[i].y;
+		//初始化旋转中心，以第三个方块为中心
+		if(i!=2){
+			var afterRotateX=currentFall[2].x+preY-currentFall[2].y;
+			var afterRotateY=currentFall[2].y+currentFall[2].x-preX;
+			//如果旋转后的位置已经有方块，就不能旋转
+			if(tetris_status[afterRotateY][afterRotateX]!="NO_BLOCK"){
+				canRotate=false;
+				break;	
+			}
+			//如果旋转后超出左边界
+			if(afterRotateX<0||tetris_status[afterRatoteY][afterRotateX]!="NO_BLOCK"){
+				/*moveRight();
+				afterRotateX=currentFall[2].x+preY-currentFall[2].y;
+				afterRotateY=currentFall[2].y+currentFall[2].x-preX;*/
+				canRotate=false;
+				break;		
+			}
+			if(afterRotateX>cols||tetris_status[afterRotateY][afterRotateX]!="NO_BLOCK"){
+				canRotate=false;
+				break;		
+			}
+		}	
+	}
+	if(canRotate){
+		//旋转前将方块变成白色
+		for(var i=0;i<currentFall.length;i++){
+			var cur=currentFall[i];
+			tetris_ctx.fillStyle="white";
+			tetris_ctx.fillRect(cur.x*cellWidth+1,cur.y*cellHeigth+1,cellWidth-2,cellHeight-2);	
+		}
+		for(var i=0;i<currentFall.length;i++){
+			var preX=currentFall[i].x;
+			var preY=currentFall[i].y;
+			if(i!=2){//旋转
+				currentFall[i].x=currentFall[2].x+preY-currentFall[2].y;
+				currentFall[i].y=currentFall[2].y+currentFall[2].x-preX;	
+			}
+			//旋转后的方块填充
+			for(var i=0;i<currentFall.length;i++){
+				var cur=currentFall[i];
+				tetris_ctx.fillStyle=cur.color;
+				tetris_ctx.fillRect(cur.x*cellWidth+1,cur.y*cellHeight+1,cellWidth-2,cellHeight-2);	
+			}	
+		}
 	}	
 }
 
 
-
-var initBlock=function(){
-	var rand=Math.floor(Math.random()*blockArr.length);
-	var currentFall=[{x:blockArr[rand][0].x,y:blockArr[rand][0].y,color:blockArr[rand][0].color},{x:blockArr[rand][1].x,y:						blockArr[rand][1].y,color:blockArr[rand][1].color},{x:blockArr[rand][2].x,y:blockArr[rand][2].y,color:blockArr[rand][2].color},{x:blockArr[rand][3].x,y:blockArr[rand][3].y,color:blockArr[rand][3].color}];
-var tetris_status=[];	
-}
-
 //控制方块下落
-var moveDown=function(){
+var moveDown=function(currentFall){
+	console.log("currentFall:"+currentFall.length);
 	var canDown=true;
 	for(var i=0;i<currentFall.length;i++){//判断是否可以往下落
 		if(currentFall[i].y>=(rows-1)){
 			canDown=false;
 			break;	
 		}
-		if(tetris_status[current[i].y+1][currentFall[i].x]!="NO_BLOCK"){
+		if(tetris_status[currentFall[i].y+1][currentFall[i].x]!="NO_BLOCK"){
 			canDown=false;
 			break;	
 		}		
@@ -181,7 +255,7 @@ var moveDown=function(){
 			}
 			for(var i=0;i<currentFall.length;i++){
 				var cur=currentFall[i];
-				tetris_ctx.fillStyle=colors[cur.color];
+				tetris_ctx.fillStyle=cur.color;
 				tetris_ctx.fillRect(cur.x*cellHeight+1,cur.y*cellWidth+1,cellWidth-2,cellHeight-2);	
 			}
 		}
@@ -190,6 +264,7 @@ var moveDown=function(){
 		for(var i=0;i<currentFall.length;i++){
 			var cur=currentFall[i];
 			if(cur.y<2){
+				console.log("y:"+cur.y);
 				localStorage.removeItem("curScore");
 				localStorage.removeItem("tetris_status");
 				localStorage.removeItem("curSpeen");
@@ -209,14 +284,49 @@ var moveDown=function(){
 		lineFull();
 		localStorage.setItem("tetris_status",JSON.stringify(tetris_status));
 		initBlock();
-	}		
+	}
 }
 
 window.onload=function(){
-	createCanvas(18,13,25,25);
-	document.body.appendChild(tetris_canvas);	
+	for(var i=0;i<rows;i++){
+		tetris_status[i]=[];
+		for(var j=0;j<cols;j++){
+			tetris_status[i][j]="NO_BLOCK";	
+		}	
+	}
+	
+	createCanvas(rows,cols,cellWidth,cellHeight);
+	document.body.appendChild(tetris_canvas);
+	curScoreEle=document.getElementById("curScoreEle");
+	curSpeedEle=document.getElementById("curSpeedEle");
+	maxScoreEle=document.getElementById("maxScoreEle");
+	var tmpStatus=localStorage.getItem("tetris_status");
+	tetris_status=tmpStatus==null?tetris_status:JSON.parse(tmpStatus);
+	drawBlock();
+	curScore=localStorage.getItem("curScore");
+	curScore=curScore==null?0:parseInt(curScore);
+	curScoreEle.innerHTML=curScore;
+	maxScore=localStorage.getItem("curSpeed");
+	curSpeed=curSpeed==null?1:parseInt(curSpeed);
+	curSpeedEle.innerHTML=curSpeed;
+	initBlock();
+	//curTimer=setInterval("moveDown(currentFall)",500/curSpeed);	
 }
 </script>
+<div style="height:100px;overflow:auto;width:100px;">
+curSpeedEle=document.getElementById("curSpeedEle");
+	maxScoreEle=document.getElementById("maxScoreEle");
+	var tmpStatus=localStorage.getItem("tetris_status");
+	tetris_status=tmpStatus==null?tetris_status:JSON.parse(tmpStatus);
+	drawBlock();
+	curScore=localStorage.getItem("curScore");
+	curScore=curScore==null?0:parseInt(curScore);
+	curScoreEle.innerHTML=curScore;
+	maxScore=localStorage.getItem("curSpeed");
+	curSpeed=curSpeed==null?1:parseInt(curSpeed);
+	curSpeedEle.innerHTML=curSpeed;
+	initBlock();
+</div>
 </body>
 </html>
 
