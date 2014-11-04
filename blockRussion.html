@@ -34,7 +34,7 @@
 	var cellHeight=25;
 	var tetris_status=[];
 	var currentFall=[];
-	var isPlaying=false;
+	var isPlaying=true;
 //7种组合
 var blockArr=[
 	[{x:cols/2-1,y:0,color:"red"},{x:cols/2,y:0,color:"red"},{x:cols/2,y:1,color:"red"},{x:cols/2+1,y:1,color:"red"}],//z
@@ -51,8 +51,8 @@ var initBlock=function(){
 	for(var i=0;i<currentFall.length;i++){
 		tetris_ctx.fillStyle=currentFall[i].color;
 		tetris_ctx.fillRect(currentFall[i].x*cellWidth+1,currentFall[i].y*cellHeight+1,cellWidth-2,cellHeight-2);
-		//tetris_status[currentFall[i].y][currentFall[i].x]="1";
-		alert("333:"+tetris_status[currentFall[i].y][currentFall[i].x]);
+		tetris_status[currentFall[i].y][currentFall[i].x]="1";
+		//alert("rand:"+rand+":"+"333:"+tetris_status[currentFall[i].y][currentFall[i].x]);
 	}
 	
 }
@@ -60,8 +60,8 @@ var initBlock=function(){
 var drawBlock=function(){
 	for(var i=0;i<rows;i++){
 		for(var j=0;j<cols;j++){
-			if(tetris_status[i][j]!="0"){
-				tetris_ctx.fillStyle=tetris_status[i][j].color;
+			if(tetris_status[i][j]=="1"){
+				tetris_ctx.fillStyle="green";
 				tetris_ctx.fillRect(j*cellWidth+1,i*cellHeight+1,cellWidth-2,cellHeight-2);	
 			}
 			else{
@@ -128,63 +128,91 @@ var createCanvas=function(rows,cols,cellWidth,cellHeight){
 
 var moveLeft=function(){
 	var canLeft=true;
+	//先假设本部方块为0
+	for(var i=0;i<currentFall.length;i++){
+		tetris_status[currentFall[i].y][currentFall[i].x]="0";	
+	}
+	
 	for(var i=0;i<currentFall.length;i++){
 		if(currentFall[i].x<=0){
 			canLeft=false;
 			break;	
 		}
-		if(tetris_status[currentFall[i].y][currentFall[i].x-1]!="0"){
+		if(tetris_status[currentFall[i].y][currentFall[i].x-1]=="1"){
 			canLeft=false;
 			break;	
 		}	
 	}
+	//alert(canLeft);
 	if(canLeft){
-		for(var i=0;i<currentFall[i].length;i++){
-			clearBlock();
-			//var cur=currentFall[i];
+		clearBlock();
+		for(var i=0;i<currentFall.length;i++){
 			currentFall[i].x--;
-			tetris_status[cur.y][cur.x]="1";
+			
+			//tetris_status[cur.y][cur.x]="1";
 		}
 		for(var i=0;i<currentFall.length;i++){
 			var cur=currentFall[i];
 			tetris_ctx.fillStyle=cur.color;
 			tetris_ctx.fillRect(cur.x*cellWidth+1,cur.y*cellHeight+1,cellWidth-2,cellHeight-2);	
+			tetris_status[currentFall[i].y][currentFall[i].x]="1";
 		}	
+	}
+	else{
+		//把先前假设的设置回1
+		for(var i=0;i<currentFall.length;i++){
+			tetris_status[currentFall[i].y][currentFall[i].x]="1";
+			tetris_status[currentFall[i].y][currentFall[i].x].color=currentFall[i].color;
+				
+		}
+		return;	
 	}	
 }
 
 
 var moveRight=function(){
 	var canRight=true;
+	//假设清空
+	for(var i=0;i<currentFall.length;i++){
+		tetris_status[currentFall[i].y][currentFall[i].x]="0";	
+	}
 	for(var i=0;i<currentFall.length;i++){
 		if(currentFall[i].x>=cols-1){
 			canRight=false;
 			break;
 		}
 		//如果右边的位置已经有方块，就不能移动
-		if(tetris_status[currentFall[i].y][currentFall[i].x+1]!="0"){
+		if(tetris_status[currentFall[i].y][currentFall[i].x+1]=="1"){
 			canRight=false;
 			break;	
 		}	
 	}
 	if(canRight){
-		for(var i=0;i<currentFall.length;i++){//右移前将每个方块都涂成白色
+		clearBlock();
+		/*for(var i=0;i<currentFall.length;i++){//右移前将每个方块都涂成白色
 			var cur=currentFall[i];
 			tetris_ctx.fillStyle="white";
 			tetris_ctx.fillRect(cur.x*cellWidth+1,cur.y*cellHeight+1,cellWidth-2,cellHeight-2);
 			tetris_status[cur.y][cur.x]="0";	
-		}
-		for(var i=0;i<currentFall[i].length;i++){//右移
+		}*/
+		for(var i=0;i<currentFall.length;i++){//右移
 			var cur=currentFall[i];
 			cur.x++;
-			tetris_status[cur.y][cur.x]="1";
 		}
 		//右移所有正在掉落的方块涂色
-		for(var i=0;i<currentFall[i].length;i++){
+		for(var i=0;i<currentFall.length;i++){
 			var cur=currentFall[i];
-			tetris_ctx.fillStyle=colors[cur.color];
-			tetris_ctx.fillRect(cur.x*cellWidth+1,cur.y*cellHeight+1,cellWidth-2,cellHeight-2);	
+			tetris_ctx.fillStyle=cur.color;
+			tetris_ctx.fillRect(cur.x*cellWidth+1,cur.y*cellHeight+1,cellWidth-2,cellHeight-2);
+			tetris_status[cur.y][cur.x]="1";	
 		}
+	}
+	else{
+		//把先前假设的设置回1
+		for(var i=0;i<currentFall.length;i++){
+			tetris_status[currentFall[i].y][currentFall[i].x]="1";	
+		}
+		return;	
 	}	
 }
 var rotate=function(){//旋转方块
@@ -204,7 +232,7 @@ var rotate=function(){//旋转方块
 			var afterRotateX=currentFall[2].x+preY-currentFall[2].y;
 			var afterRotateY=currentFall[2].y+currentFall[2].x-preX;
 			//如果旋转后的位置已经有方块，就不能旋转
-			if(tetris_status[afterRotateY][afterRotateX]!="0"){
+			if(tetris_status[afterRotateY][afterRotateX]=="1"){
 				canRotate=false;
 				//恢复原来的格子
 				for(var a=0;a<currentFall.length;a++){
@@ -214,7 +242,7 @@ var rotate=function(){//旋转方块
 				break;	
 			}
 			//如果旋转后超出左边界
-			if(afterRotateX<0||tetris_status[afterRotateY][afterRotateX]!="0"){
+			if(afterRotateX<0||tetris_status[afterRotateY][afterRotateX]=="1"){
 				/*moveRight();
 				afterRotateX=currentFall[2].x+preY-currentFall[2].y;
 				afterRotateY=currentFall[2].y+currentFall[2].x-preX;*/
@@ -226,7 +254,7 @@ var rotate=function(){//旋转方块
 				//恢复原来的格子
 				break;		
 			}
-			if(afterRotateX>cols||tetris_status[afterRotateY][afterRotateX]!="0"){
+			if(afterRotateX>cols||tetris_status[afterRotateY][afterRotateX]=="1"){
 				canRotate=false;
 				//恢复原来的格子
 				for(var a=0;a<currentFall.length;a++){
@@ -267,14 +295,16 @@ var rotate=function(){//旋转方块
 //控制方块下落
 var moveDown=function(){
 	var canDown=true;
+	//先假设本身所占位置没有格子
+	for(var i=0;i<currentFall.length;i++){
+		tetris_status[currentFall[i].y][currentFall[i].x]="0";	
+	}
 	for(var i=0;i<currentFall.length;i++){//判断是否可以往下落
 		if(currentFall[i].y>=(rows-1)){
-			alert(1);
 			canDown=false;
 			break;	
 		}
-		if(tetris_status[currentFall[i].y+1][currentFall[i].x]!="0"){
-			alert(i+":"+tetris_status[currentFall[i].y+1][currentFall[i].x]);
+		if(tetris_status[currentFall[i].y+1][currentFall[i].x]=="1"){
 			canDown=false;
 			break;	
 		}		
@@ -285,7 +315,6 @@ var moveDown=function(){
 			var cur=currentFall[i];        
 			cur.y++;
 			tetris_status[cur.y][cur.x]="1";
-			alert(i);
 		}
 		for(var i=0;i<currentFall.length;i++){
 			var cur=currentFall[i];
@@ -293,11 +322,13 @@ var moveDown=function(){
 			tetris_ctx.fillRect(cur.x*cellHeight+1,cur.y*cellWidth+1,cellWidth-2,cellHeight-2);	
 		}
 	}
-	/*else{
+	else{//设置回来
+		for(var i=0;i<currentFall.length;i++){
+			tetris_status[currentFall[i].y][currentFall[i].x]="1";	
+		}
 		for(var i=0;i<currentFall.length;i++){
 			var cur=currentFall[i];
-			if(cur.y<0){
-				console.log("y:"+cur.y);
+			if(cur.y<1){
 				localStorage.removeItem("curScore");
 				localStorage.removeItem("tetris_status");
 				localStorage.removeItem("curSpeen");
@@ -309,16 +340,21 @@ var moveDown=function(){
 					}	
 				}
 				isPlaying=false;
-			clearInterval(curTimer);
-			return;	
+				clearInterval(curTimer);
+				return;	
 			}
-			tetris_status[cur.y][cur.x]=cur.color;
 		}
+		//改变
+		//isPlaying=false;
+		//clearInterval(curTimer);
+		//return;	
+		//tetris_status[cur.y][cur.x]="1";
+		//改变
+		
 		lineFull();
 		localStorage.setItem("tetris_status",JSON.stringify(tetris_status));
 		initBlock();
-	}*/
-	initBlock();
+	}
 }
 function clearBlock(){
 	for(var i=0;i<currentFall.length;i++){
@@ -355,7 +391,7 @@ window.onload=function(){
 	for(var i=0;i<rows;i++){
 		tetris_status[i]=[];
 		for(var j=0;j<cols;j++){
-			tetris_status[i][j]="0";	
+			tetris_status[i][j]="0";
 		}	
 	}
 	
@@ -374,10 +410,13 @@ window.onload=function(){
 	curSpeed=curSpeed==null?1:parseInt(curSpeed);
 	curSpeedEle.innerHTML=curSpeed;
 	initBlock();
-	//curTimer=setInterval("moveDown(currentFall)",500/curSpeed);	
+	curTimer=setInterval("moveDown(currentFall)",500/curSpeed);	
 }
+
 </script>
-<div onClick="moveDown();">downBlock</div>
+<div onClick="moveLeft();" style="">leftBlock</div>
+
+
 </body>
 </html>
 
